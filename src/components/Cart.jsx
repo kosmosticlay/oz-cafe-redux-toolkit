@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import data from "../assets/data";
-import { removeFromCart } from "../redux/redux";
+import { cartSlice } from "../redux/redux";
 
 function Cart() {
   const menu = useSelector((state) => state.menuReducer);
@@ -34,10 +34,10 @@ function Cart() {
   );
 }
 
-function CartItem({ item, options, quantity, cart, setCart }) {
+function CartItem({ item, options, quantity }) {
   const dispatch = useDispatch();
   return (
-    <li className="cart-item">
+    <li className="cart-item" key={item.id}>
       <div className="cart-item-info">
         <img height={100} src={item.img} />
         <div>{item.name}</div>
@@ -53,7 +53,7 @@ function CartItem({ item, options, quantity, cart, setCart }) {
       <button
         className="cart-item-delete"
         onClick={() => {
-          dispatch(removeFromCart(item.id));
+          dispatch(cartSlice.actions.removeFromCart({ id: item.id }));
         }}
       >
         삭제

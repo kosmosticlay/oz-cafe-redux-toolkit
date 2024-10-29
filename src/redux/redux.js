@@ -1,36 +1,30 @@
-import { combineReducers, legacy_createStore } from "redux";
 import data from "../assets/data";
+import { configureStore, createSlice } from "@reduxjs/toolkit";
 
-// 동적으로 상태가 변화하는 액션 생성자 생성
-export const addToCart = (options, quantity, id) => {
-  return {
-    type: "addToCart",
-    payload: { options, quantity, id },
-  };
-};
+// createSlice함수로 액션 타입, 생성자, 리듀서를 포함하는 슬라이스를 생성 가능
 
-export const removeFromCart = (id) => {
-  return {
-    type: "removeFromCart",
-    payload: { id },
-  };
-};
+export const menuSlice = createSlice({
+  name: "menu",
+  initialState: data.menu,
+  reducers: {}, // 상태 변경 기능이 필요 없으므로 빈 객체로 존재
+});
 
-const cartReducer = (state = [], action) => {
-  switch (action.type) {
-    case "addToCart":
+export const cartSlice = createSlice({
+  name: "cart",
+  initialState: [],
+  reducers: {
+    addToCart(state, action) {
       return [...state, action.payload];
-    case "removeFromCart":
+    },
+    removeFromCart(state, action) {
       return state.filter((el) => action.payload.id !== el.id);
-    default:
-      return state;
-  }
-};
+    },
+  },
+});
 
-const menuReducer = (state = data.menu, action) => {
-  return state;
-};
-
-const rootReducer = combineReducers({ cartReducer, menuReducer });
-
-export const store = legacy_createStore(rootReducer);
+export const store = configureStore({
+  reducer: {
+    menuReducer: menuSlice.reducer,
+    cartReducer: cartSlice.reducer, // createSlice가 자동으로 모든 리듀서 함수를 합쳐 단일 리듀서 함수(객체)로 반환
+  },
+});
